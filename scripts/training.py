@@ -35,6 +35,7 @@ DEFAULT_CONFIG = {
     'epochs':
         {'head': 50, 'full': 50},
     'valid-split': 0.1,
+    'use_lrn': True,
     'generator': {
         'jitter': 0.3,
         'color_hue': 0.1,
@@ -53,7 +54,7 @@ NAME_TRAIN_CLASSES = 'train_classes.txt'
 def parse_params():
     # class YOLO defines the default value, so suppress any default HERE
     parser = arg_params_yolo()
-    parser.add_argument('-d', '--path_dataset', type=str, required=True,
+    parser.add_argument('-d', '--path_dataset', type=str, required=False,
                         help='path to the train source - dataset,'
                              ' with single taining instance per line')
     parser.add_argument('--path_config', type=str, required=False,
@@ -75,6 +76,7 @@ def load_config(path_config, default_config):
         return config
     with open(path_config, 'r') as fp:
         conf_user = yaml.safe_load(fp)
+
     config.update(conf_user)
     return config
 
@@ -123,6 +125,7 @@ def _main(path_dataset, path_anchors, path_weights=None, path_output='.',
           path_config=None, path_classes=None, nb_gpu=1, **kwargs):
 
     config = load_config(path_config, DEFAULT_CONFIG)
+
     anchors = get_anchors(path_anchors)
 
     nb_classes = get_nb_classes(path_dataset)
@@ -133,7 +136,7 @@ def _main(path_dataset, path_anchors, path_weights=None, path_output='.',
     _create_model = create_model_tiny if is_tiny_version else create_model
     name_prefix = 'tiny-' if is_tiny_version else ''
     model = _create_model(config['image-size'], anchors, nb_classes, freeze_body=2,
-                          weights_path=path_weights, nb_gpu=nb_gpu)
+                          weights_path=path_weights, nb_gpu=nb_gpu, lrn=config['use_lrn'])
 
     tb_logging = TensorBoard(log_dir=path_output)
     checkpoint = ModelCheckpoint(os.path.join(path_output, NAME_CHECKPOINT),
