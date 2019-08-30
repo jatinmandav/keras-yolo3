@@ -54,7 +54,7 @@ NAME_TRAIN_CLASSES = 'train_classes.txt'
 def parse_params():
     # class YOLO defines the default value, so suppress any default HERE
     parser = arg_params_yolo()
-    parser.add_argument('-d', '--path_dataset', type=str, required=False,
+    parser.add_argument('-d', '--path_dataset', type=str, required=True,
                         help='path to the train source - dataset,'
                              ' with single taining instance per line')
     parser.add_argument('--path_config', type=str, required=False,
