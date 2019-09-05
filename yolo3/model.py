@@ -18,7 +18,7 @@ from keras.utils import multi_gpu_model
 
 from yolo3.utils import compose, update_path
 
-from yolo3.local_response_norm import LRN2D
+from yolo3.local_response_norm import LocalResponseNorm2D
 
 use_lrn = False
 
@@ -40,7 +40,7 @@ def DarknetConv2D_BN_Leaky(*args, **kwargs):
     if lrn:
         return compose(
             DarknetConv2D(*args, **no_bias_kwargs),
-            LRN2D(),
+            LocalResponseNorm2D(),
             LeakyReLU(alpha=0.1),
         )
     return compose(
@@ -96,7 +96,7 @@ def yolo_body_full(inputs, num_anchors, num_classes, lrn):
     :param int num_classes:
     :return:
 
-    >>> yolo_body_full(Input(shape=(None, None, 3)), 6, 10)  #doctest: +ELLIPSIS
+    >>> yolo_body_full(Input(shape=(None, None, 3)), 6, 10, True)  #doctest: +ELLIPSIS
     <keras.engine.training.Model object at ...>
     """
     darknet = Model(inputs, darknet_body(inputs, lrn=lrn))
@@ -125,7 +125,7 @@ def yolo_body_tiny(inputs, num_anchors, num_classes, lrn):
     :param int num_classes:
     :return:
 
-    >>> yolo_body_tiny(Input(shape=(None, None, 3)), 6, 10)  #doctest: +ELLIPSIS
+    >>> yolo_body_tiny(Input(shape=(None, None, 3)), 6, 10, True)  #doctest: +ELLIPSIS
     <keras.engine.training.Model object at ...>
     """
     x1 = compose(
