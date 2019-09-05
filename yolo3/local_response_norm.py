@@ -1,21 +1,20 @@
 from keras.layers.core import Layer
 from keras import backend as K
 
-"""
-LocalResponseNorm Layer Definition in Keras
-
-:param float alpha:
-:param int k:
-:param float beta:
-:param int n:
-:param **kwargs of Layer Class from Keras:
-
-This code is adapted from pylearn2.
-License at: https://github.com/lisa-lab/pylearn2/blob/master/LICENSE.txt
-"""
 
 class LocalResponseNorm(Layer):
+    """
+    LocalResponseNorm Layer Definition in Keras
 
+    :param float alpha:
+    :param int k:
+    :param float beta:
+    :param int n:
+    :param **kwargs of Layer Class from Keras:
+
+    This code is adapted from pylearn2.
+    License at: https://github.com/lisa-lab/pylearn2/blob/master/LICENSE.txt
+    """
     def __init__(self, alpha=0.0001, k=1, beta=0.75, n=5, **kwargs):
         self.alpha = alpha
         self.k = k
@@ -55,19 +54,19 @@ class LocalResponseNorm(Layer):
         return dict(list(base_config.items()) + list(config.items()))
 
 
-"""
-LocalResponseNorm2D Layer Definition in Keras
-
-:param floatalpha:
-:param int k:
-:param float beta:
-:param int n:
-:param **kwargs of Layer Class from Keras:
-
-This code is adapted from pylearn2.
-License at: https://github.com/lisa-lab/pylearn2/blob/master/LICENSE.txt
-"""
 class LocalResponseNorm2D(LocalResponseNorm):
+    """
+    LocalResponseNorm2D Layer Definition in Keras
+
+    :param floatalpha:
+    :param int k:
+    :param float beta:
+    :param int n:
+    :param **kwargs of Layer Class from Keras:
+
+    This code is adapted from pylearn2.
+    License at: https://github.com/lisa-lab/pylearn2/blob/master/LICENSE.txt
+    """
     def __init__(self, alpha=1e-4, k=2, beta=0.75, n=5, **kwargs):
         if n % 2 == 0:
             raise NotImplementedError(

@@ -33,7 +33,8 @@ DEFAULT_CONFIG = {
         {'head': 50, 'bottlenecks': 30, 'full': 50},
     'valid-split': 0.1,
     'recompute-bottlenecks': True,
-    'generator': {}
+    'generator': {},
+    'use_lrn': True,
 }
 NAME_BOTTLENECKS = 'bottlenecks.npz'
 NAME_CHECKPOINT = 'ep{epoch:03d}-loss{loss:.3f}-val_loss{val_loss:.3f}.h5'
@@ -51,7 +52,7 @@ def _main(path_dataset, path_anchors, path_weights=None, path_output='.',
     # make sure you know what you freeze
     model, bottleneck_model, last_layer_model = create_model_bottleneck(
         config['image-size'], anchors, nb_classes, freeze_body=2,
-        weights_path=path_weights, nb_gpu=nb_gpu)
+        weights_path=path_weights, nb_gpu=nb_gpu, lrn=config['use_lrn'])
 
     log_tb = TensorBoard(log_dir=path_output)
     checkpoint = ModelCheckpoint(os.path.join(path_output, NAME_CHECKPOINT),

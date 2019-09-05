@@ -29,7 +29,8 @@ class YOLO(object):
     >>> # prepare EMPTY model since download and convert existing is a bit complicated
     >>> anchors = get_anchors(YOLO.get_defaults('anchors_path'))
     >>> classes = get_class_names(YOLO.get_defaults('classes_path'))
-    >>> yolo_empty = yolo_body_tiny(Input(shape=(None, None, 3)), len(anchors) // 2, len(classes))
+    >>> lrn = YOLO.get_defaults('use_lrn')
+    >>> yolo_empty = yolo_body_tiny(Input(shape=(None, None, 3)), len(anchors) // 2, len(classes), lrn)
     >>> path_model = os.path.join(update_path('model_data'), 'yolo_empty.h5')
     >>> yolo_empty.save(path_model)
     >>> # use the empty one, so no reasonable detections are expected
@@ -51,6 +52,7 @@ class YOLO(object):
         "iou": 0.45,
         "model_image_size": (416, 416),
         "nb_gpu": 1,
+        "use_lrn": False
     }
 
     @classmethod
@@ -60,7 +62,7 @@ class YOLO(object):
         return cls._DEFAULT_PARAMS.get(name)
 
     def __init__(self, weights_path, anchors_path, classes_path, model_image_size,
-                 score=0.3, iou=0.45, nb_gpu=1, **kwargs):
+                 score=0.3, iou=0.45, nb_gpu=1, use_lrn=False, **kwargs):
         """
 
         :param str weights_path: path to loaded model weights, e.g. 'model_data/tiny-yolo.h5'
@@ -80,6 +82,7 @@ class YOLO(object):
         self.iou = iou
         self.model_image_size = model_image_size
         self.nb_gpu = nb_gpu
+        self.lrn = use_lrn
         if not self.nb_gpu:
             # disable all GPUs
             os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
@@ -121,10 +124,10 @@ class YOLO(object):
             logging.exception('Loading weights from "%s"', self.weights_path)
             if is_tiny_version:
                 self.yolo_model = yolo_body_tiny(Input(shape=(None, None, 3)),
-                                                 num_anchors // 2, num_classes)
+                                                 num_anchors // 2, num_classes, self.lrn)
             else:
                 self.yolo_model = yolo_body_full(Input(shape=(None, None, 3)),
-                                                 num_anchors // 3, num_classes)
+                                                 num_anchors // 3, num_classes, self.lrn)
             # make sure model, anchors and classes match
             self.yolo_model.load_weights(self.weights_path, by_name=True, skip_mismatch=True)
         else:

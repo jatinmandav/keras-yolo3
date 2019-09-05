@@ -94,6 +94,7 @@ def yolo_body_full(inputs, num_anchors, num_classes, lrn):
     :param inputs:
     :param int num_anchors:
     :param int num_classes:
+    :param bool lrn:
     :return:
 
     >>> yolo_body_full(Input(shape=(None, None, 3)), 6, 10, True)  #doctest: +ELLIPSIS
@@ -123,6 +124,7 @@ def yolo_body_tiny(inputs, num_anchors, num_classes, lrn):
     :param inputs:
     :param int num_anchors:
     :param int num_classes:
+    :param bool lrn:
     :return:
 
     >>> yolo_body_tiny(Input(shape=(None, None, 3)), 6, 10, True)  #doctest: +ELLIPSIS
